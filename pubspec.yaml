@@ -1,0 +1,11 @@
+name: crypto_hash
+description: A cryptographic hashing library for Dart
+version: 0.1.0
+homepage: https://github.com/lucas979797
+
+environment:
+  sdk: '>=2.12.0 <3.0.0'
+
+dev_dependencies:
+  pedantic: ^1.9.0
+  test: ^1.14.4
