@@ -6,9 +6,8 @@ void main() {
     setUp(() {});
 
     test('First Test', () {
-      var sha1 = ShaOne();
       var testStr = 'A Test';
-      var hash = sha1.hashData(testStr.codeUnits);
+      var hash = ShaOne.hashData(testStr.codeUnits);
       expect(hash, '8f0c0855915633e4a7de19468b3874c8901df043');
     });
   });

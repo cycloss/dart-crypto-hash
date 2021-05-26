@@ -7,45 +7,44 @@ import 'data.dart';
 // Contains the hashing algorithm business logic
 /// Contains methods that hash data using the SHA-1 hashing algorithm.
 class ShaOne {
-  static const K1 = 0x5A827999;
-  static const K2 = 0x6ED9EBA1;
-  static const K3 = 0x8F1BBCDC;
-  static const K4 = 0xCA62C1D6;
-  static const STAGE_COUNT = 80;
+  static const _K1 = 0x5A827999;
+  static const _K2 = 0x6ED9EBA1;
+  static const _K3 = 0x8F1BBCDC;
+  static const _K4 = 0xCA62C1D6;
+  static const _STAGE_COUNT = 80;
 
   /// Hashes [data] using the SHA-1 hashing algorithm.
   /// [data] must effectively be 8 bit integers.
   /// Bits past the first byte in each int will be discarded.
-
-  String hashData(List<int> data) {
+  static String hashData(List<int> data) {
     var context = Sha1Context();
     var dataToHash = DataToHash(data);
     while (dataToHash.hasMoreSchedules) {
       var schedule = dataToHash.getNextSchedule();
-      processSchedule(context, schedule);
+      _processSchedule(context, schedule);
     }
     return context.getHash();
   }
 
   // The compression function
-  void processSchedule(Sha1Context ctx, List<int> schedule) {
+  static void _processSchedule(Sha1Context ctx, List<int> schedule) {
     var a = ctx.a, b = ctx.b, c = ctx.c, d = ctx.d, e = ctx.e;
-    for (var j = 0; j < STAGE_COUNT; j++) {
+    for (var j = 0; j < _STAGE_COUNT; j++) {
       var fRes = 0;
       if (j < 20) {
-        fRes += K1;
+        fRes += _K1;
         // d should have 0s as 32 msbs so ~b's 1's in the 32 msbs should be cut off
         var r = (b & c) | ((~b) & d);
         fRes += r;
       } else if (j < 40) {
-        fRes += K2;
+        fRes += _K2;
         var r = b ^ c ^ d;
         fRes += r;
       } else if (j < 60) {
-        fRes += K3;
+        fRes += _K3;
         fRes += (b & c) | (b & d) | (c & d);
       } else {
-        fRes += K4;
+        fRes += _K4;
         fRes += b ^ c ^ d;
       }
 
@@ -66,4 +65,6 @@ class ShaOne {
     }
     ctx.addAndTruncate(a, b, c, d, e);
   }
+
+  ShaOne._();
 }

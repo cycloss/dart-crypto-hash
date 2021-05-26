@@ -14,13 +14,14 @@ import 'dart:convert';
 import 'package:crypto_hash/crypto_hash.dart';
 
 void main() {
-  var sha1 = ShaOne();
+
   var testString = 'Hello World!';
-  var hash = sha1.hashData(testString.codeUnits);
+  var hash = ShaOne.hashData(testString.codeUnits);
   print(hash); // prints 2ef7bde68ce5404e97d5f042f95f89f1c232871
 
+  // Unicode:
   var testString2 = 'こんにちは世界！';
-  var hash2 = sha1.hashData(utf8.encode(testString2));
+  var hash2 = ShaOne.hashData(utf8.encode(testString2));
   print(hash2); // prints f66b68c765fae864106c7352d06be5df5ab510c3
 }
 
