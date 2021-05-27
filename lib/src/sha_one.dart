@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:crypto_hash/src/utils.dart';
@@ -18,7 +19,7 @@ class ShaOne {
   /// Hashes [data] using the SHA-1 hashing algorithm.
   /// [data] must effectively be 8 bit integers.
   /// Bits past the first byte in each int will be discarded.
-  static String hashData(List<int> data) {
+  static String hashBytes(List<int> data) {
     var context = Sha1Context();
     var dataToHash = DataToHash(data);
     while (dataToHash.hasMoreSchedules) {
@@ -28,14 +29,19 @@ class ShaOne {
     return context.getHash();
   }
 
+  /// Hashes a String [s] by encoding it with utf8 and hashing the bytes. Accepts any Unicode string.
+  static String hashString(String s) {
+    return hashBytes(utf8.encode(s));
+  }
+
   /// Hashes the file located at [path]. Reads the file synchronously.
   static String hashFile(String path) {
-    return hashData(File(path).readAsBytesSync());
+    return hashBytes(File(path).readAsBytesSync());
   }
 
   /// Hashes the file located at [path]. Reads the file asynchronously.
   static Future<String> hashFileAsync(String path) async {
-    return hashData(await File(path).readAsBytes());
+    return hashBytes(await File(path).readAsBytes());
   }
 
   // The compression function
@@ -44,20 +50,15 @@ class ShaOne {
     for (var j = 0; j < _STAGE_COUNT; j++) {
       var fRes = 0;
       if (j < 20) {
-        fRes += _K1;
         // d should have 0s as 32 msbs so ~b's 1's in the 32 msbs should be cut off
-        var r = (b & c) | ((~b) & d);
-        fRes += r;
+        // brackets around the bitwise sections are absolutely necessary
+        fRes += _K1 + ((b & c) | ((~b) & d));
       } else if (j < 40) {
-        fRes += _K2;
-        var r = b ^ c ^ d;
-        fRes += r;
+        fRes += _K2 + (b ^ c ^ d);
       } else if (j < 60) {
-        fRes += _K3;
-        fRes += (b & c) | (b & d) | (c & d);
+        fRes += _K3 + ((b & c) | (b & d) | (c & d));
       } else {
-        fRes += _K4;
-        fRes += b ^ c ^ d;
+        fRes += _K4 + (b ^ c ^ d);
       }
 
       // add together and throw away overflow bit
