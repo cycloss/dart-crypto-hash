@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:crypto_hash/src/utils.dart';
 
 import 'constants.dart';
@@ -24,6 +26,16 @@ class ShaOne {
       _processSchedule(context, schedule);
     }
     return context.getHash();
+  }
+
+  /// Hashes the file located at [path]. Reads the file synchronously.
+  static String hashFile(String path) {
+    return hashData(File(path).readAsBytesSync());
+  }
+
+  /// Hashes the file located at [path]. Reads the file asynchronously.
+  static Future<String> hashFileAsync(String path) async {
+    return hashData(await File(path).readAsBytes());
   }
 
   // The compression function
