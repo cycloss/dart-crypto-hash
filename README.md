@@ -4,6 +4,18 @@ The SHA-1 hash function implemented from scratch using pure dart.
 
 I might add support for SHA-256 in the future.
 
+## Installing
+
+For now, Crypto Hash is not available through pub dev, but you can still install it by adding the following to your dependencies:
+
+```yaml
+dependencies:
+  crypto_hash:
+    git:
+      url: https://github.com/lucas979797/dart-crypto-hash
+      ref: main
+```
+
 ## Usage
 
 A simple usage example:
